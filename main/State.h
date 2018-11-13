@@ -8,7 +8,7 @@ class Creature;
 #define MAX_NAME_LEN 12
 
 #define ACTIVE_STATES 3
-#define AMBIENT_STATES 3
+#define AMBIENT_STATES 4
 
 class State {
  public:

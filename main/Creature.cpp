@@ -7,8 +7,7 @@
 
 #include <cmath>
 
-// TODO: put your kit number here
-#define KIT_NUM 0
+#define KIT_NUM 14
 
 #define VERSION "1.4"
 
