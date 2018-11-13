@@ -2,7 +2,7 @@
 #define _ACTIVE3_H_
 
 #include "Creature.h"
-#include "Active3.h"
+#include "State.h"
 
 class Active3 : public State {
  public:

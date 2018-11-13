@@ -2,6 +2,13 @@
 #include "Debug.h"
 #include "State.h"
 #include "Wait.h"
+#include "Active1.h"
+#include "Active2.h"
+#include "Active2.h"
+#include "Ambient1.h"
+#include "Ambient2.h"
+#include "Ambient3.h"
+#include "Ambient4.h"
 #include "Midi.h"
 #include "Neopixel.h"
 
@@ -176,7 +183,8 @@ bool Creature::_rxSetGlobals(uint8_t len, uint8_t* payload) {
 
   // Handle change in tx power.
   if (old.TX_POWER != GLOBALS.TX_POWER) {
-    _rf69.setTxPower(GLOBALS.TX_POWER, true);
+    //_rf69.setTxPower(GLOBALS.TX_POWER, true);
+    _rf69.setTxPower(GLOBALS.TX_POWER);
   }
 
   return true;
@@ -405,7 +413,8 @@ void Creature::setup() {
     Serial.println(F("RFM69 radio init failed"));
     while (1);
   }
-  _rf69.setTxPower(GLOBALS.TX_POWER, true);
+  //_rf69.setTxPower(GLOBALS.TX_POWER, true);
+    _rf69.setTxPower(GLOBALS.TX_POWER);
 
   // Guaranteed random https://xkcd.com/221
   uint8_t key[] = {0x98, 0xe8, 0xac, 0xe6, 0xfa, 0xca, 0xc1, 0xb8,

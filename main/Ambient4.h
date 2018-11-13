@@ -2,7 +2,7 @@
 #define _AMBIENT4_H_
 
 #include "Creature.h"
-#include "Ambient4.h"
+#include "State.h"
 
 class Ambient4 : public State {
  public:

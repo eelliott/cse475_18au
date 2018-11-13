@@ -137,7 +137,15 @@ class State {
   /** Reference to the creature this is a state in */
   Creature& _creature;
 
-  int8_t _globalWeights[ACTIVE_STATES + AMBIENT_STATES] = { 0 };
+  int8_t _globalWeights[ACTIVE_STATES + AMBIENT_STATES] = { 
+    /*Ambient1*/ 20,
+    /*Active1*/ 12,
+    /*Ambient2*/ 24,
+    /*Active2*/ 14,
+    /*Ambient3*/ 22,
+    /*Active3*/ 13,
+    /*Ambient4*/ 27
+   };
  private:
   char _name[MAX_NAME_LEN + 1];
   uint8_t _id;
