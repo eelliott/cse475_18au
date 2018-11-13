@@ -1,5 +1,6 @@
 #include "Creature.h"
 #include "State.h"
+#include <cmath>
 
 State::State(Creature& creature, char* const name, const uint8_t id) : _creature(creature), _id(id) {
   strncpy(_name, name, MAX_NAME_LEN);
@@ -31,7 +32,9 @@ bool State::rxPlayEffect(uint8_t len, uint8_t* payload) {
 }
 
 bool State::rxStartle(int8_t rssi, uint8_t len, uint8_t* payload) {
-  // TODO: implement
+  float x = (GLOBALS.STARTLE_DECAY - rssi)/Creature::GLOBALS.STARTLE_DECAY;
+  float decay = State::getStartleFactor()/(1+exp(-x));
+  State::startled(decay*payload[0], payload[1]);
 }
 
 void State::txStartle(uint8_t strength, uint8_t id) {
