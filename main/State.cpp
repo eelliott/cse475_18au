@@ -1,5 +1,6 @@
 #include "Creature.h"
 #include "State.h"
+#include "Debug.h"
 #include <cmath>
 
 State::State(Creature& creature, char* const name, const uint8_t id) : _creature(creature), _id(id) {
@@ -32,13 +33,16 @@ bool State::rxPlayEffect(uint8_t len, uint8_t* payload) {
 }
 
 bool State::rxStartle(int8_t rssi, uint8_t len, uint8_t* payload) {
-  float x = (GLOBALS.STARTLE_DECAY - rssi)/Creature::GLOBALS.STARTLE_DECAY;
-  float decay = State::getStartleFactor()/(1+exp(-x));
+  float x = (_creature.GLOBALS.STARTLE_DECAY - rssi)/_creature.GLOBALS.STARTLE_DECAY;
+  float startleFactor = getStartleFactor();
+  float decay = startleFactor/(1+exp(-x));
   State::startled(decay*payload[0], payload[1]);
 }
 
 void State::txStartle(uint8_t strength, uint8_t id) {
-  // TODO: implement
+  uint8_t payload[2] = {strength, id};
+  uint8_t len = 2;
+  _creature.tx(PID_STARTLE, BROADCAST_ADDR, 2, payload);
 }
 
 State* State::transition() {
@@ -50,7 +54,17 @@ void State::PIR() {
 }
 
 void State::startled(uint8_t strength, uint8_t id) {
-  // TODO: implement
+  if (_creature.getLastStartleId() == _id) {
+    uint32_t time = millis();
+    uint8_t startleThreshold = _creature.GLOBALS.STARTLE_THRESHOLD;
+    startleThreshold =  startleThreshold - startleThreshold*(time-_creature.getLastStartle())
+                        *_creature.GLOBALS.STARTLE_THRESHOLD_DECAY*getStartleFactor();
+    if (strength >= startleThreshold) {
+      dprint("Startled! new startle id = ");
+      dprintln(_id);
+    }
+    _creature.setLastStartlee(time);                             
+  }
 }
 
 int8_t* State::getGlobalWeights() {
