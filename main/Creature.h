@@ -37,8 +37,6 @@ class State;
 #define PID_SEND_STATE 0x7
 
 #define NUM_STATES 7
-// #define WAIT 0
-// #define STARTLE 255
 // #define ACTIVE1 1
 // #define ACTIVE2 3
 // #define ACTIVE3 5
@@ -46,6 +44,8 @@ class State;
 // #define AMBIENT2 4
 // #define AMBIENT3 6
 // #define AMBIENT4 8
+#define WAIT 0
+#define STARTLE 255
 
 struct Globals {
   uint16_t TX_POWER;
@@ -120,8 +120,16 @@ class Creature {
     return _lastStartle;
   }
 
-  void setLastStartlee(uint32_t lastStartle) {
+  void setLastStartle(uint32_t lastStartle) {
     _lastStartle = lastStartle;
+  }
+
+  uint8_t getStartleThreshold() {
+    return _startleThreshold;
+  }
+
+  void setStartleThreshold(uint8_t thresh) {
+    _startleThreshold = thresh;
   }
 
   uint8_t* getCreatureStates() {
@@ -131,6 +139,8 @@ class Creature {
   int8_t* getCreatureDistances() {
     return _creatureDistances;
   }
+
+  uint8_t updateThreshold();
 
   // Run after construction but before loop.
   void setup();
@@ -165,7 +175,7 @@ class Creature {
   /**
    *  Starts the creature by transitioning to the next appropriate state based on mode.
    *
-   *  @params payload  Should be mode to start in. 0x8XXX for continue, 0x0000 for random start, 0x00XX for state XX.
+   *  @params payload  Should be start mode and state. Mode 0x01 for continue from _prev, 0x00 for starting at the given state ID.
    */
   bool _rxStart(uint8_t len, uint8_t* payload);
 

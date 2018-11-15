@@ -16,7 +16,7 @@
 
 #define KIT_NUM 14
 
-#define VERSION "1.4"
+#define VERSION "1.5"
 
 // Returns current battery voltage
 inline float getBatteryVoltage() {
@@ -144,6 +144,11 @@ bool Creature::_rx(uint8_t pid, uint8_t srcAddr, uint8_t len, uint8_t* payload, 
 void Creature::_updateDistance(uint8_t addr, int8_t rssi) {
   int8_t oldRssi = this->_creatureDistances[addr];
   this->_creatureDistances[addr] = (oldRssi+rssi)/2;
+}
+
+uint8_t Creature::updateThreshold() {
+  setStartleThreshold((uint8_t) round(getStartleThreshold() - getStartleThreshold() * (millis() - getLastStartle()) * _state->getStartleFactor() * GLOBALS.STARTLE_THRESHOLD_DECAY));
+  setLastStartle(millis());
 }
 
 bool Creature::_rxSetGlobals(uint8_t len, uint8_t* payload) {
@@ -424,6 +429,10 @@ void Creature::_transition(State* const state) {
     Serial.print(" to ");
     Serial.println(state->getId());
 
+    if (state->getId() != WAIT && state->getId() != STARTLE) {
+      updateThreshold();
+    }
+    
     _state = state;
 
     if (_prev != nullptr && _prev != state) {
