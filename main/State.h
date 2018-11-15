@@ -13,6 +13,7 @@ class Creature;
 class State {
  public:
   State(Creature& creature, char* const name, const uint8_t id);
+  State(const uint8_t id);
   State(const State&) = delete;
 
   /**

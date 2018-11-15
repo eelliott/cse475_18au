@@ -52,10 +52,59 @@ void State::txStartle(uint8_t strength, uint8_t id) {
   _creature.tx(PID_STARTLE, BROADCAST_ADDR, 2, payload);
 }
 
+// The number of creatures in a given state (the distribution) divided by the total number
+// of creatures would make common states more likely. In fact, we want the opposite, so
+// calculate the inverse of this value. Sum all of these values for each state.
+// A simple example would be 6 creatures and 3 states. The stateDistribution is [1, 2, 3] (1 in state 0, 2 in state 1, 3 in state 2)
+// Therefore the individual probabilities are [6, 3, 2], and when we sum these, probs becomes [6, 9, 11]
+// Then we generate a random number from 0 to 10 (11 values). If the random number is less than 6
+// we go to state 0, else if less than 9 we go to state 1, else we go to state 2. This gives the desired behavior
+// of being more likely to transition into less common states.
 State* State::transition() {
-  uint8_t len = ACTIVE_STATES + AMBIENT_STATES + 1;
-  int randNum = rand() % 100;
-  
+  // WAIT, active states, ambient states, and STARTLE
+  uint8_t len = ACTIVE_STATES + AMBIENT_STATES + 2;
+  // WAIT is 0, active and ambient are 1 to (len - 2), STARTLE will go in len - 1
+  uint8_t stateDistribution[len];
+  uint8_t *creatureStates = _creature.getCreatureStates();
+  uint8_t numCreatures = _creature.GLOBALS.NUM_CREATURES;
+  for (int c = 0; c < numCreatures; c++) {
+    uint8_t cState = creatureStates[c];
+    if (cState == STARTLE) {
+      // Convert from STARTLE to len - 1 to fit in stateDistribution
+      cState = len - 1;
+    }
+    stateDistribution[cState]++;
+    numCreatures++;
+  }
+
+  uint8_t probSum = 0;
+  uint8_t probs[len];
+  for (int i = 0; i < len; i++) {
+    // The probability for state i is the inverse of the percentage of creatures in state i
+    uint8_t prob = ((uint8_t) ((float) numCreatures / (float) stateDistribution[i]));
+    probSum += prob;
+    probs[i] = probSum;
+  }
+
+  // Pick a random number 0 to probSum - 1
+  // Any number in the range is equally likely, so values with a longer range (probability) are more likely
+  uint8_t randNum = rand() % probSum;
+  uint8_t newStateId = 0;
+  for (int i = 0; i < len; i++) {
+    // probs[i] contains the sums up to state i, so randNum must be less than at least one of these values
+    // We transition if randNum is in the range [probs[i - 1] .. probs[i]), for i = 0 that's [0 .. probs[0]) 
+    if (randNum < probs[i]) {
+      newStateId = i;
+      break;
+    }
+  }
+
+  if (newStateId == len - 1) {
+    // Undo the earlier transformation
+    newStateId = STARTLE;
+  }
+
+  return _creature.getStateFromId(newStateId);
 }
 
 void State::PIR() {

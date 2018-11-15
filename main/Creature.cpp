@@ -228,9 +228,9 @@ bool Creature::_rxStart(uint8_t len, uint8_t* payload) {
       break;
     case 0x00: // State
       if (stateId = 0x00)  // Random state
-        setNextState(_getStateFromId(random(0, NUM_STATES)));
+        setNextState(getStateFromId(random(0, NUM_STATES)));
       else 
-        setNextState(_getStateFromId(stateId));
+        setNextState(getStateFromId(stateId));
       break;
     default:
       dprint("The mode ");
@@ -238,48 +238,41 @@ bool Creature::_rxStart(uint8_t len, uint8_t* payload) {
       dprintln(" is invalid");
       break;
   }
-  // if (mode == 0x01) {
-  //   _transition(_prev);
-  // } else if (mode == 0x00) {
-  //   State *newState = _getStateFromId(stateId);
-  //   _transition(newState);
-  // }
-  return true;
 }
 
-// State* Creature::_getStateFromId(uint8_t stateId) {
-//   State *found;
-//     switch (stateId) {
-//       case WAIT:
-//         found = new Wait(*this);
-//         break;
-//       case STARTLE:
-//         //found = new Startle(*this);
-//         break;
-//       case ACTIVE1:
-//         found = new Active1(*this);
-//         break;
-//       case ACTIVE2:
-//         found = new Active2(*this);
-//         break;
-//       case ACTIVE3:
-//         found = new Active3(*this);
-//         break;
-//       case AMBIENT1:
-//         found = new Ambient1(*this);
-//         break;
-//       case AMBIENT2:
-//         found = new Ambient2(*this);
-//         break;
-//       case AMBIENT3:
-//         found = new Ambient3(*this);
-//         break;
-//       case AMBIENT4:
-//         found = new Ambient4(*this);
-//         break;
-//    }
-//    return found;  
-// }
+State* Creature::getStateFromId(uint8_t stateId) {
+  State *found;
+    switch (stateId) {
+      case WAIT:
+        found = new Wait(*this);
+        break;
+      case STARTLE:
+        //found = new Startle(*this);
+        break;
+      case ACTIVE1:
+        found = new Active1(*this);
+        break;
+      case ACTIVE2:
+        found = new Active2(*this);
+        break;
+      case ACTIVE3:
+        found = new Active3(*this);
+        break;
+      case AMBIENT1:
+        found = new Ambient1(*this);
+        break;
+      case AMBIENT2:
+        found = new Ambient2(*this);
+        break;
+      case AMBIENT3:
+        found = new Ambient3(*this);
+        break;
+      case AMBIENT4:
+        found = new Ambient4(*this);
+        break;
+   }
+   return found;  
+}
 
 bool Creature::_rxBroadcastStates(uint8_t len, uint8_t* payload) {
   if (len != GLOBALS.NUM_CREATURES + 1) {
