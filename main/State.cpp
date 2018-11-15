@@ -33,10 +33,17 @@ bool State::rxPlayEffect(uint8_t len, uint8_t* payload) {
 }
 
 bool State::rxStartle(int8_t rssi, uint8_t len, uint8_t* payload) {
+  if (len != 2) {
+    dprint("Invalid length of ");
+    dprint(len);
+    dprintln(" was recieved in rxStartle.");
+    return false;
+  }
   float x = (_creature.GLOBALS.STARTLE_DECAY - rssi)/_creature.GLOBALS.STARTLE_DECAY;
   float startleFactor = getStartleFactor();
   float decay = startleFactor/(1+exp(-x));
   State::startled(decay*payload[0], payload[1]);
+  return true;
 }
 
 void State::txStartle(uint8_t strength, uint8_t id) {
@@ -47,7 +54,7 @@ void State::txStartle(uint8_t strength, uint8_t id) {
 
 State* State::transition() {
   uint8_t len = ACTIVE_STATES + AMBIENT_STATES + 1;
-  
+  // TODO: implement
 }
 
 void State::PIR() {

@@ -20,8 +20,6 @@ class State;
 
 #define OLED_WIDTH 21 // chars
 
-#define OLED_WIDTH 21 // chars
-
 #define RFM69_FREQ 915.0
 #define RFM69_CS 8
 #define RFM69_INT 3
@@ -37,6 +35,8 @@ class State;
 #define PID_BROADCAST_STATES 0x5
 #define PID_STARTLE 0x6
 #define PID_SEND_STATE 0x7
+
+#define NUM_STATES 7
 
 struct Globals {
   uint16_t TX_POWER;
@@ -154,7 +154,7 @@ class Creature {
   void _rxStop();
 
   /**
-   *  Starts the creature by transitioning to the next appropriate state baseed on mode.
+   *  Starts the creature by transitioning to the next appropriate state based on mode.
    *
    *  @params payload  Should be mode to start in. 0x8XXX for continue, 0x0000 for random start, 0x00XX for state XX.
    */
@@ -199,6 +199,19 @@ class Creature {
 
   /** Current, next, and previous states, or null if no next state. */
   State *_state, *_next, *_prev;
+
+  /** 
+   * Array of pointers to all possible States to transition to. 
+   * The index of the array corrisponds to the id of the state.
+  */
+  State** _possibleStates;
+
+  /**
+   * Gets the state corrisponding to the given id. Returns nullptr if id is not found.
+   * 
+   * @param id  id of desired state.
+  */
+  State* getStateFromId(uint8_t id);
 
   uint8_t _kitNum, _addr;
 

@@ -4,7 +4,7 @@
 #include "Wait.h"
 #include "Active1.h"
 #include "Active2.h"
-#include "Active2.h"
+#include "Active3.h"
 #include "Ambient1.h"
 #include "Ambient2.h"
 #include "Ambient3.h"
@@ -28,6 +28,15 @@ Creature::Creature() {
   // Initialize _next to be the Wait state, so we will immediately transition into it on the first loop.
   _next = new Wait(*this);
   _prev = _state = nullptr;
+  
+  _possibleStates = new State*[NUM_STATES];
+  _possibleStates[0] = new Ambient1(*this);
+  _possibleStates[1] = new Active1(*this);
+  _possibleStates[2] = new Ambient2(*this);
+  _possibleStates[3] = new Active2(*this);
+  _possibleStates[4] = new Ambient3(*this);
+  _possibleStates[5] = new Active3(*this);
+  _possibleStates[6] = new Ambient4(*this);
 
   if (KIT_NUM < 0) {
     Serial.print(F("Invalid kit number: "));
@@ -208,18 +217,51 @@ bool Creature::_rxStart(uint8_t len, uint8_t* payload) {
   uint8_t mode = payload[0];
   uint8_t stateId = payload[1];
   
+  switch (mode)
+  {
+    case 0x01: // Continue
+      setNextState(_state);
+      break;
+    case 0x00: // State
+      if (stateId = 0x00)  // Random state
+        setNextState(getStateFromId(random(0, NUM_STATES)));
+      else 
+        setNextState(getStateFromId(stateId));
+      break;
+    default:
+      dprint("The mode ");
+      dprint(mode);
+      dprintln(" is invalid");
+      break;
+  }
   return true;
 }
 
 bool Creature::_rxBroadcastStates(uint8_t len, uint8_t* payload) {
-  if (len != GLOBALS.NUM_CREATURES+1) {
-    dprint("NUM_CREATURES not the same as len in _rxBroadcastStates");
+  if (len != GLOBALS.NUM_CREATURES + 1) {
+    dprint("Recieved length of ");
+    dprint(len);
+    dprint(" in _rxBroadcastStates when ");
+    dprint(GLOBALS.NUM_CREATURES + 1);
+    dprintln(" was expected.");
     return false;
   }
   for (int i = 0; i <= len; i++) {
     this->_creatureStates[i] = payload[i];
   }
   return true;
+}
+
+State* Creature::getStateFromId(uint8_t id) {
+  if (id < 0 && id > NUM_STATES) {
+    dprint("Recieved id ");
+    dprint(id);
+    dprint(" in getStateFromId when an id between 0 and ");
+    dprint(NUM_STATES);
+    dprintln(" was expected. ");
+    return nullptr;
+  }   
+  return _possibleStates[id];
 }
 
 bool Creature::tx(const uint8_t pid, const uint8_t dst_addr, const uint8_t len, uint8_t* const payload) {
