@@ -224,7 +224,7 @@ bool Creature::_rxStart(uint8_t len, uint8_t* payload) {
       break;
     case 0x00: // State
       if (stateId = 0x00)  // Random state
-        setNextState(getStateFromId(random(0, NUM_STATES)));
+        setNextState(getStateFromId(random(0, NUM_STATES));
       else 
         setNextState(getStateFromId(stateId));
       break;

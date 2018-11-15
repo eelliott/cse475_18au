@@ -249,6 +249,8 @@ class Creature {
 
   /** Last known state of the PIR sensor. Used for duplicate detection. */
   bool _PIR;
+
+  State* _getStateFromId(uint8_t stateId);
 };
 
 #endif  // _CREATURE_H_
