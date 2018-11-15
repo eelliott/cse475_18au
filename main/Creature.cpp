@@ -217,23 +217,22 @@ bool Creature::_rxStart(uint8_t len, uint8_t* payload) {
   uint8_t mode = payload[0];
   uint8_t stateId = payload[1];
   
-  switch (mode)
-  {
+  switch (mode) {
     case 0x01: // Continue
       setNextState(_state);
       break;
     case 0x00: // State
       if (stateId = 0x00)  // Random state
-        setNextState(getStateFromId(random(0, NUM_STATES));
+        setNextState(_getStateFromId(random(0, NUM_STATES)));
       else 
-        setNextState(getStateFromId(stateId));
+        setNextState(_getStateFromId(stateId));
       break;
     default:
       dprint("The mode ");
       dprint(mode);
       dprintln(" is invalid");
       break;
-
+  }
   // if (mode == 0x01) {
   //   _transition(_prev);
   // } else if (mode == 0x00) {
@@ -527,4 +526,5 @@ void Creature::setup() {
 Creature::~Creature() {
   delete[] _creatureDistances;
   delete[] _creatureStates;
+  delete[] _possibleStates;
 }
