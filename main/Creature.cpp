@@ -208,6 +208,13 @@ bool Creature::_rxStart(uint8_t len, uint8_t* payload) {
   uint8_t mode = payload[0];
   uint8_t stateId = payload[1];
   
+  if (mode == 0x01) {
+    _transition(_prev);
+  } else { // 0x00
+    // State nextState = instantiate new state from stateId 
+    // stateId = {0 = Wait, 255 = startle, oddnum(1,3,5) = active, evennum(2,4,6,8) = ambient}
+    //_transition(nextState);
+  }
   return true;
 }
 
