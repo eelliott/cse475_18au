@@ -29,14 +29,14 @@ Creature::Creature() {
   _next = new Wait(*this);
   _prev = _state = nullptr;
   
-  // _possibleStates = new State*[NUM_STATES];
-  // _possibleStates[0] = new Ambient1(*this);
-  // _possibleStates[1] = new Active1(*this);
-  // _possibleStates[2] = new Ambient2(*this);
-  // _possibleStates[3] = new Active2(*this);
-  // _possibleStates[4] = new Ambient3(*this);
-  // _possibleStates[5] = new Active3(*this);
-  // _possibleStates[6] = new Ambient4(*this);
+  _possibleStates = new State*[NUM_STATES];
+  _possibleStates[0] = new Ambient1(*this);
+  _possibleStates[1] = new Active1(*this);
+  _possibleStates[2] = new Ambient2(*this);
+  _possibleStates[3] = new Active2(*this);
+  _possibleStates[4] = new Ambient3(*this);
+  _possibleStates[5] = new Active3(*this);
+  _possibleStates[6] = new Ambient4(*this);
 
   if (KIT_NUM < 0) {
     Serial.print(F("Invalid kit number: "));
@@ -217,65 +217,65 @@ bool Creature::_rxStart(uint8_t len, uint8_t* payload) {
   uint8_t mode = payload[0];
   uint8_t stateId = payload[1];
   
-  // switch (mode)
-  // {
-  //   case 0x01: // Continue
-  //     setNextState(_state);
-  //     break;
-  //   case 0x00: // State
-  //     if (stateId = 0x00)  // Random state
-  //       setNextState(getStateFromId(random(0, NUM_STATES));
-  //     else 
-  //       setNextState(getStateFromId(stateId));
-  //     break;
-  //   default:
-  //     dprint("The mode ");
-  //     dprint(mode);
-  //     dprintln(" is invalid");
-  //     break;
+  switch (mode)
+  {
+    case 0x01: // Continue
+      setNextState(_state);
+      break;
+    case 0x00: // State
+      if (stateId = 0x00)  // Random state
+        setNextState(getStateFromId(random(0, NUM_STATES));
+      else 
+        setNextState(getStateFromId(stateId));
+      break;
+    default:
+      dprint("The mode ");
+      dprint(mode);
+      dprintln(" is invalid");
+      break;
 
-  if (mode == 0x01) {
-    _transition(_prev);
-  } else if (mode == 0x00) {
-    State *newState = _getStateFromId(stateId);
-    _transition(newState);
-  }
+  // if (mode == 0x01) {
+  //   _transition(_prev);
+  // } else if (mode == 0x00) {
+  //   State *newState = _getStateFromId(stateId);
+  //   _transition(newState);
+  // }
   return true;
 }
 
-State* Creature::_getStateFromId(uint8_t stateId) {
-  State *found;
-    switch (stateId) {
-      case WAIT:
-        found = new Wait(*this);
-        break;
-      case STARTLE:
-        //found = new Startle(*this);
-        break;
-      case ACTIVE1:
-        found = new Active1(*this);
-        break;
-      case ACTIVE2:
-        found = new Active2(*this);
-        break;
-      case ACTIVE3:
-        found = new Active3(*this);
-        break;
-      case AMBIENT1:
-        found = new Ambient1(*this);
-        break;
-      case AMBIENT2:
-        found = new Ambient2(*this);
-        break;
-      case AMBIENT3:
-        found = new Ambient3(*this);
-        break;
-      case AMBIENT4:
-        found = new Ambient4(*this);
-        break;
-   }
-   return found;  
-}
+// State* Creature::_getStateFromId(uint8_t stateId) {
+//   State *found;
+//     switch (stateId) {
+//       case WAIT:
+//         found = new Wait(*this);
+//         break;
+//       case STARTLE:
+//         //found = new Startle(*this);
+//         break;
+//       case ACTIVE1:
+//         found = new Active1(*this);
+//         break;
+//       case ACTIVE2:
+//         found = new Active2(*this);
+//         break;
+//       case ACTIVE3:
+//         found = new Active3(*this);
+//         break;
+//       case AMBIENT1:
+//         found = new Ambient1(*this);
+//         break;
+//       case AMBIENT2:
+//         found = new Ambient2(*this);
+//         break;
+//       case AMBIENT3:
+//         found = new Ambient3(*this);
+//         break;
+//       case AMBIENT4:
+//         found = new Ambient4(*this);
+//         break;
+//    }
+//    return found;  
+// }
 
 bool Creature::_rxBroadcastStates(uint8_t len, uint8_t* payload) {
   if (len != GLOBALS.NUM_CREATURES + 1) {
@@ -292,17 +292,17 @@ bool Creature::_rxBroadcastStates(uint8_t len, uint8_t* payload) {
   return true;
 }
 
-// State* Creature::getStateFromId(uint8_t id) {
-//   if (id < 0 && id > NUM_STATES) {
-//     dprint("Recieved id ");
-//     dprint(id);
-//     dprint(" in getStateFromId when an id between 0 and ");
-//     dprint(NUM_STATES);
-//     dprintln(" was expected. ");
-//     return nullptr;
-//   }   
-//   return _possibleStates[id];
-// }
+State* Creature::_getStateFromId(uint8_t id) {
+  if (id < 0 && id > NUM_STATES) {
+    dprint("Recieved id ");
+    dprint(id);
+    dprint(" in getStateFromId when an id between 0 and ");
+    dprint(NUM_STATES);
+    dprintln(" was expected. ");
+    return nullptr;
+  }   
+  return _possibleStates[id];
+}
 
 bool Creature::tx(const uint8_t pid, const uint8_t dst_addr, const uint8_t len, uint8_t* const payload) {
   if (len + 3 > RH_RF69_MAX_MESSAGE_LEN) {
