@@ -38,6 +38,16 @@ class State;
 #define PID_STARTLE 0x6
 #define PID_SEND_STATE 0x7
 
+#define WAIT 0
+#define STARTLE 255
+#define ACTIVE1 1
+#define ACTIVE2 3
+#define ACTIVE3 5
+#define AMBIENT1 2
+#define AMBIENT2 4
+#define AMBIENT3 6
+#define AMBIENT4 8
+
 struct Globals {
   uint16_t TX_POWER;
   uint8_t STARTLE_RAND_MIN;
@@ -236,6 +246,8 @@ class Creature {
 
   /** Last known state of the PIR sensor. Used for duplicate detection. */
   bool _PIR;
+
+  State* _getStateFromId(uint8_t stateId);
 };
 
 #endif  // _CREATURE_H_

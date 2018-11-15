@@ -4,7 +4,7 @@
 #include "Wait.h"
 #include "Active1.h"
 #include "Active2.h"
-#include "Active2.h"
+#include "Active3.h"
 #include "Ambient1.h"
 #include "Ambient2.h"
 #include "Ambient3.h"
@@ -207,15 +207,48 @@ bool Creature::_rxStart(uint8_t len, uint8_t* payload) {
   }
   uint8_t mode = payload[0];
   uint8_t stateId = payload[1];
-  
+
   if (mode == 0x01) {
     _transition(_prev);
-  } else { // 0x00
-    // State nextState = instantiate new state from stateId 
-    // stateId = {0 = Wait, 255 = startle, oddnum(1,3,5) = active, evennum(2,4,6,8) = ambient}
-    //_transition(nextState);
+  } else if (mode == 0x00) {
+    State *newState = _getStateFromId(stateId);
+    _transition(newState);
   }
   return true;
+}
+
+State* Creature::_getStateFromId(uint8_t stateId) {
+  State *found;
+    switch (stateId) {
+      case WAIT:
+        found = new Wait(*this);
+        break;
+      case STARTLE:
+        //found = new Startle(*this);
+        break;
+      case ACTIVE1:
+        found = new Active1(*this);
+        break;
+      case ACTIVE2:
+        found = new Active2(*this);
+        break;
+      case ACTIVE3:
+        found = new Active3(*this);
+        break;
+      case AMBIENT1:
+        found = new Ambient1(*this);
+        break;
+      case AMBIENT2:
+        found = new Ambient2(*this);
+        break;
+      case AMBIENT3:
+        found = new Ambient3(*this);
+        break;
+      case AMBIENT4:
+        found = new Ambient4(*this);
+        break;
+   }
+   return found;  
 }
 
 bool Creature::_rxBroadcastStates(uint8_t len, uint8_t* payload) {
