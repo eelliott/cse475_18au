@@ -36,7 +36,16 @@ class State;
 #define PID_STARTLE 0x6
 #define PID_SEND_STATE 0x7
 
-#define NUM_STATES 7
+//#define NUM_STATES 7
+#define WAIT 0
+#define STARTLE 255
+#define ACTIVE1 1
+#define ACTIVE2 3
+#define ACTIVE3 5
+#define AMBIENT1 2
+#define AMBIENT2 4
+#define AMBIENT3 6
+#define AMBIENT4 8
 
 struct Globals {
   uint16_t TX_POWER;
@@ -204,14 +213,14 @@ class Creature {
    * Array of pointers to all possible States to transition to. 
    * The index of the array corrisponds to the id of the state.
   */
-  State** _possibleStates;
+  //State** _possibleStates;
 
   /**
    * Gets the state corrisponding to the given id. Returns nullptr if id is not found.
    * 
    * @param id  id of desired state.
   */
-  State* getStateFromId(uint8_t id);
+  //State* getStateFromId(uint8_t id);
 
   uint8_t _kitNum, _addr;
 

@@ -54,12 +54,7 @@ void State::txStartle(uint8_t strength, uint8_t id) {
 
 State* State::transition() {
   uint8_t len = ACTIVE_STATES + AMBIENT_STATES + 1;
-<<<<<<< HEAD
-  // TODO: implement
-=======
   int randNum = rand() % 100;
-  
->>>>>>> b42062efd9974cbec4c8e118fbbeebd4adea29d8
 }
 
 void State::PIR() {
