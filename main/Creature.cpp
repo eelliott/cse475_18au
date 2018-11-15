@@ -110,16 +110,20 @@ bool Creature::_rx(uint8_t pid, uint8_t srcAddr, uint8_t len, uint8_t* payload, 
       _rxStart(len, payload);
       return true;
     case PID_PLAY_SOUND:
-      // TODO: Implement
+      if (srcAddr != CONTROLLER_ADDR) return false;
+      _state->rxPlaySound(len, payload);
       return true;
     case PID_PLAY_EFFECT:
-      // TODO: Implement
+      if (srcAddr != CONTROLLER_ADDR) return false;
+      _state->rxPlayEffect(len, payload);
       return true;
     case PID_BROADCAST_STATES:
-      // TODO: Implement
+      if (srcAddr != CONTROLLER_ADDR) return false;
+      _rxBroadcastStates(len, payload);
       return true;
     case PID_STARTLE:
-      // TODO: Implement
+      if (srcAddr != CONTROLLER_ADDR) return false;
+      _state->rxStartle(rssi, len, payload);
       return true;
     default:
       Serial.print(F("Received packet of unknown type: "));
@@ -129,7 +133,8 @@ bool Creature::_rx(uint8_t pid, uint8_t srcAddr, uint8_t len, uint8_t* payload, 
 }
 
 void Creature::_updateDistance(uint8_t addr, int8_t rssi) {
-  // TODO: implement
+  int8_t oldRssi = this->_creatureDistances[addr];
+  this->_creatureDistances[addr] = (oldRssi+rssi)/2;
 }
 
 bool Creature::_rxSetGlobals(uint8_t len, uint8_t* payload) {
@@ -202,12 +207,18 @@ bool Creature::_rxStart(uint8_t len, uint8_t* payload) {
   }
   uint8_t mode = payload[0];
   uint8_t stateId = payload[1];
-  // TODO: implement
+  
   return true;
 }
 
 bool Creature::_rxBroadcastStates(uint8_t len, uint8_t* payload) {
-  // TODO: implement
+  if (len != GLOBALS.NUM_CREATURES+1) {
+    dprint("NUM_CREATURES not the same as len in _rxBroadcastStates");
+    return false;
+  }
+  for (int i = 0; i <= len; i++) {
+    this->_creatureStates[i] = payload[i];
+  }
   return true;
 }
 
