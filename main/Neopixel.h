@@ -10,9 +10,14 @@ class Neopixel {
  public:
   /** List of all neopixel functions in this class. Each takes dt, the difference in time since the last call. */
   static void rainbow(uint32_t dt);
+  static void crazed(uint32_t wait);
+  static void randomspiral(uint32_t wait);
+  static void alternate(uint32_t wait);
+  static void rainCycle(uint32_t wait);
+  static void Rain(byte* rds, byte* rss, byte* rdv, byte* rsv);
 
   /** Array of all light effects, in a fixed order, used to assign an index to each. Add your effects to this! */
-  static constexpr void (*LIGHTS[2])(uint32_t) = {nullptr, &rainbow};
+  static constexpr void (*LIGHTS[7])(uint32_t) = {&rainbow, &crazed, nullptr, &alternate, &rainCycle, nullptr, nullptr};
 
   /**
    * Use this to set the current light gesture.
