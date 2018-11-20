@@ -28,12 +28,6 @@ float Startle::getStartleFactor() {
 
 bool Startle::rxStartle(int8_t rssi, uint8_t len, uint8_t* payload) {}
 
-void Startle::txStartle(uint8_t strength, uint8_t id) {}
+void Startle::PIR() {}
 
-void Startle::PIR() {
-  dprintln("PIR triggered!");
-}
-
-void Startle::startled(uint8_t strength, uint8_t id) {
-    dprintln("Startled in Startle");
-}
+void Startle::startled() {}
