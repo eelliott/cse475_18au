@@ -10,6 +10,15 @@ class Creature;
 #define ACTIVE_STATES 3
 #define AMBIENT_STATES 3
 
+#define ACTIVE1 1
+#define ACTIVE2 3
+#define ACTIVE3 5
+#define AMBIENT1 2
+#define AMBIENT2 4
+#define AMBIENT3 6
+#define WAIT 0
+#define STARTLE 255
+
 class State {
  public:
   State(Creature& creature, char* const name, const uint8_t id);
