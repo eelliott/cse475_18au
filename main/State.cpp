@@ -2,6 +2,7 @@
 #include "State.h"
 #include "Debug.h"
 #include "Startle.h"
+#include "Midi.h"
 #include <cmath>
 
 State::State(Creature& creature, char* const name, const uint8_t id) : _creature(creature), _id(id) {
@@ -18,8 +19,20 @@ char* State::getName() {
 }
 void State::playSound(uint8_t sound_idx) {
   switch (sound_idx) {
-    case 0:
-      Serial.println("Playing sound 0...");
+    case 0: //AMBIENT1
+      Midi::setSound(19);
+    case 1: //ACTIVE1
+      Midi::setSound(18);
+    case 2: //AMBIENT2
+      Midi::setSound(22);
+    case 3: //ACTIVE2
+      Midi::setSound(21);
+    case 4: //AMBIENT3
+      Midi::setSound(23);
+    case 5: //ACTIVE3
+      Midi::setSound(20);
+    case 6: //STARTLE
+      Midi::setSound(24);
     default:
       Serial.print("No sound of ID ");
       Serial.println(sound_idx);

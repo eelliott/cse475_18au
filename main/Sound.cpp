@@ -267,3 +267,73 @@ Sound Midi::wiwa(
     -15,
     1
 );
+
+Sound Midi::bird1( // Active1
+    VS1053_BANK_MELODY,
+    124,
+    120,
+    false,
+    8,
+    (uint8_t[]) {94, 94, 94, 88, 90, 96, 90, 76},
+    (uint8_t[]) {50, 50, 50, 50, 50, 50, 50, 50}
+);
+
+Sound Midi::ocarina( // Active2
+    VS1053_BANK_MELODY,
+    80,
+    120,
+    false,
+    6,
+    (uint8_t[]) {74, 71, 69, 74, 71, 69},
+    (uint8_t[]) {50, 50, 50, 50, 50, 50}
+);
+
+Sound Midi::musicBox( // Active3
+    VS1053_BANK_MELODY,
+    11,
+    120,
+    false,
+    5,
+    (uint8_t[]) {96, 92, 94, 98, 96},
+    (uint8_t[]) {50, 50, 50, 50, 50}
+);
+
+Sound Midi::bird2( // Ambient1
+    VS1053_BANK_MELODY,
+    124,
+    120,
+    false,
+    3,
+    (uint8_t[]) {84, 96, 90},
+    (uint8_t[]) {50, 50, 50}
+);
+
+Sound Midi::harp( // Ambient2
+    VS1053_BANK_MELODY,
+    47,
+    120,
+    false,
+    4,
+    (uint8_t[]) {71, 69, 73, 76},
+    (uint8_t[]) {50, 50, 50, 50}
+);
+
+Sound Midi::seashore( // Ambient3
+    VS1053_BANK_MELODY,
+    123,
+    120,
+    false,
+    1,
+    (uint8_t[]){64},
+    (uint8_t[]){255}
+);
+
+Sound Midi::heavyRain( // Startle 
+    VS1053_BANK_MELODY,
+    127,
+    120,
+    false,
+    1,
+    (uint8_t[]){64},
+    (uint8_t[]){255}
+);
