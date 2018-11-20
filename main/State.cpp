@@ -71,13 +71,66 @@ bool State::rxStartle(int8_t rssi, uint8_t len, uint8_t* payload) {
 void State::txStartle(uint8_t strength, uint8_t id) {
   uint8_t payload[2] = {strength, id};
   uint8_t len = 2;
-  _creature.tx(PID_STARTLE, BROADCAST_ADDR, 2, payload);
+  _creature.tx(6, 255, 2, payload);
 }
 
 State* State::transition() {
-  uint8_t len = ACTIVE_STATES + AMBIENT_STATES + 1;
-  int randNum = rand() % 100;
-  
+
+  // Get total number of active creatures (i.e. they've recently communicated & are not in Wait or Startle)
+  // Get the total number of creatures in each state
+  // Get the total sum of the inverse absolute value of the RSSI
+  uint8_t numActiveCreature = 0;
+  uint8_t stateSums[ACTIVE_STATES + AMBIENT_STATES] = { 0 };
+  float distanceStateSums[ACTIVE_STATES + AMBIENT_STATES] = { 0 };
+  for (uint8_t i = 1; i < _creature.GLOBALS.NUM_CREATURES + 1; i++) {
+    if (_creature.getCreatureStates()[i] > 0 && _creature.getCreatureStates()[i] <= (ACTIVE_STATES + AMBIENT_STATES)) {
+      numActiveCreature += 1;
+      float creatureInverseDistance = _creature.getCreatureDistances()[i] ? -1.f / _creature.getCreatureDistances()[i] : 0;
+      stateSums[_creature.getCreatureStates()[i] - 1] += 1;
+      distanceStateSums[_creature.getCreatureStates()[i] - 1] += creatureInverseDistance;
+    }
+  }
+
+  // Calculate the global scalar values taking into account the states of other creatures
+  float stateGlobalScalars[ACTIVE_STATES + AMBIENT_STATES] = { 0 };
+  for (uint8_t i = 0; i < ACTIVE_STATES + AMBIENT_STATES; i++) {
+    stateGlobalScalars[i] = numActiveCreature ? _globalWeights[i] * ((numActiveCreature - stateSums[i]) / (float) numActiveCreature) : 0;
+  }
+
+  float stateLikelihoods[ACTIVE_STATES + AMBIENT_STATES] = { 0 };
+  for (uint8_t i = 0; i < ACTIVE_STATES + AMBIENT_STATES; i++) {
+    stateLikelihoods[i] = getLocalWeights()[i] + stateGlobalScalars[i] * distanceStateSums[i];
+  }
+
+  Serial.print(stateLikelihoods[0]);
+  Serial.print("\t");
+  for (uint8_t i = 1; i < ACTIVE_STATES + AMBIENT_STATES; i++) {
+    stateLikelihoods[i] += stateLikelihoods[i - 1];
+    Serial.print(stateLikelihoods[i]);
+    Serial.print("\t");
+  }
+  Serial.println();
+
+  float randomVal = static_cast <float> (rand()) / ( static_cast <float> (RAND_MAX / (stateLikelihoods[ACTIVE_STATES + AMBIENT_STATES - 1])));
+
+  uint8_t stateID = 0;
+  for (uint8_t i = 0; i < ACTIVE_STATES + AMBIENT_STATES; i++) {
+    if (randomVal < stateLikelihoods[i]) {
+      stateID = i + 1;
+      break;
+    }
+  }
+
+  Serial.print(randomVal);
+  Serial.print(" --> ");
+  Serial.println(stateID);
+
+
+  return _creature.getState(stateID);
+}
+
+int8_t* State::getGlobalWeights() {
+  return _globalWeights;
 }
 
 void State::PIR() {
@@ -89,13 +142,14 @@ void State::PIR() {
 
 void State::startled(uint8_t strength, uint8_t id) {
   uint8_t last = _creature.getLastStartleId();
-  if ( != _id) {
-    
-    if (strength >= startleThreshold) {
-      dprint("Startled! new startle id = ");
-      dprintln(_id);
+  if (last != _id) {
+    _creature.updateThreshold();
+    if (strength >= _creature.getStartleThreshold()) {
+      _creature.setNextState(new Startle(_creature));
+      txStartle(strength, id);
+      _creature.setLastStartleId(id);
+      _creature.setStartleThreshold(255);
     }
-    _creature.setLastStartlee(time);                             
   }
 }
 

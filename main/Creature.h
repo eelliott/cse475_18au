@@ -36,16 +36,16 @@ class State;
 #define PID_STARTLE 0x6
 #define PID_SEND_STATE 0x7
 
-#define NUM_STATES 7
-// #define ACTIVE1 1
-// #define ACTIVE2 3
-// #define ACTIVE3 5
-// #define AMBIENT1 2
-// #define AMBIENT2 4
-// #define AMBIENT3 6
-// #define AMBIENT4 8
+#define ACTIVE1 1
+#define ACTIVE2 3
+#define ACTIVE3 5
+#define AMBIENT1 2
+#define AMBIENT2 4
+#define AMBIENT3 6
 #define WAIT 0
 #define STARTLE 255
+
+#define DISTANCE_ALPHA 0.65
 
 struct Globals {
   uint16_t TX_POWER;
@@ -219,18 +219,12 @@ class Creature {
   /** Current, next, and previous states, or null if no next state. */
   State *_state, *_next, *_prev;
 
-  /** 
-   * Array of pointers to all possible States to transition to. 
-   * The index of the array corrisponds to the id of the state.
-  */
-  State** _possibleStates;
-
   /**
    * Gets the state corrisponding to the given id. Returns nullptr if id is not found.
    * 
-   * @param id  id of desired state.
+   * @param sateId  id of desired state.
   */
-  State* _getStateFromId(uint8_t id);
+  State* _getStateFromId(uint8_t stateId);
 
   uint8_t _kitNum, _addr;
 

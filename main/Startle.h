@@ -1,12 +1,12 @@
-#ifndef _AMBIENT4_H_
-#define _AMBIENT4_H_
+#ifndef _STARTLE_H_
+#define _STARTLE_H_
 
 #include "Creature.h"
 #include "State.h"
 
-class Ambient4 : public State {
+class Startle : public State {
  public:
-  Ambient4(Creature& creature) : State(creature, "Ambient4", 7) {}
+  Startle(Creature& creature) : State(creature, "Startle", 255) {}
   uint8_t getNumRepeats();  // 10
 //   State* transition();
   void loop(uint32_t dt);
@@ -21,4 +21,4 @@ private:
   static constexpr uint8_t _localWeights[ACTIVE_STATES + AMBIENT_STATES] = { 0 };
 };
 
-#endif  // _AMBIENT4_H_
+#endif  // _STARTLE_H_
