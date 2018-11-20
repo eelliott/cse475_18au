@@ -104,7 +104,6 @@ bool Creature::_rx(uint8_t pid, uint8_t srcAddr, uint8_t len, uint8_t* payload, 
   _rxCount++;
   _updateDistance(srcAddr, rssi);
 
-  // TODO: implement to call appropriate state functions.
   switch (pid) {
     case PID_SET_GLOBALS:
       if (srcAddr != CONTROLLER_ADDR) return false;
@@ -147,7 +146,12 @@ void Creature::_updateDistance(uint8_t addr, int8_t rssi) {
 }
 
 uint8_t Creature::updateThreshold() {
-  setStartleThreshold((uint8_t) round(getStartleThreshold() - getStartleThreshold() * (millis() - getLastStartle()) * _state->getStartleFactor() * GLOBALS.STARTLE_THRESHOLD_DECAY));
+  uint8_t delta = getStartleThreshold() * (millis() - getLastStartle()) * _state->getStartleFactor() * GLOBALS.STARTLE_THRESHOLD_DECAY;
+  if ((int16_t) getStartleThreshold() - (int16_t) delta < 0) {
+    setStartleThreshold(0);
+  } else {
+    setStartleThreshold((uint8_t) round(getStartleThreshold() - delta));
+  }
   setLastStartle(millis());
 }
 

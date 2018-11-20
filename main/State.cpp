@@ -15,21 +15,40 @@ uint8_t State::getId() {
 char* State::getName() {
   return _name;
 }
-
 void State::playSound(uint8_t sound_idx) {
-  // TODO: implement
+  switch (sound_idx) {
+    case 0:
+      Serial.println("Playing sound 0...");
+    default:
+      Serial.print("No sound of ID ");
+      Serial.println(sound_idx);
+  }
 }
 
 void State::playEffect(uint8_t effect_idx) {
-  // TODO: implement
+  switch (effect_idx) {
+    case 0:
+      Serial.println("Playing effect 0...");
+    default:
+      Serial.print("No effect of ID ");
+      Serial.println(effect_idx);
+  }
 }
 
 bool State::rxPlaySound(uint8_t len, uint8_t* payload) {
-  // TODO: implement
+  if (len < 1) {
+    return false;
+  }
+  playSound(payload[0]);
+  return true;
 }
 
 bool State::rxPlayEffect(uint8_t len, uint8_t* payload) {
-  // TODO: implement
+  if (len < 1) {
+    return false;
+  }
+  playEffect(payload[0]);
+  return true;
 }
 
 bool State::rxStartle(int8_t rssi, uint8_t len, uint8_t* payload) {
@@ -39,10 +58,13 @@ bool State::rxStartle(int8_t rssi, uint8_t len, uint8_t* payload) {
     dprintln(" was recieved in rxStartle.");
     return false;
   }
+  uint8_t strength = payload[0];
+  uint8_t id = payload[1];  
+
   float x = (_creature.GLOBALS.STARTLE_DECAY - rssi)/_creature.GLOBALS.STARTLE_DECAY;
-  float startleFactor = getStartleFactor();
-  float decay = startleFactor/(1+exp(-x));
-  State::startled(decay*payload[0], payload[1]);
+  float decay =  getStartleFactor()/(1+exp(-x));
+  strength = (uint8_t)round(decay * strength);
+  startled(strength, id);
   return true;
 }
 
@@ -59,15 +81,16 @@ State* State::transition() {
 }
 
 void State::PIR() {
-  // TODO: implement
+  uint8_t id = rand() % 256;
+  uint8_t strength = min(255, (rand() % (_creature.GLOBALS.STARTLE_RAND_MAX - _creature.GLOBALS.STARTLE_RAND_MIN + 1) + _creature.GLOBALS.STARTLE_RAND_MIN) * (1.f - (255.f / _creature.GLOBALS.STARTLE_THRESHOLD) * 0.5 + 1.f));
+
+  startled(strength, id);
 }
 
 void State::startled(uint8_t strength, uint8_t id) {
-  if (_creature.getLastStartleId() == _id) {
-    uint32_t time = millis();
-    uint8_t startleThreshold = _creature.GLOBALS.STARTLE_THRESHOLD;
-    startleThreshold =  startleThreshold - startleThreshold*(time-_creature.getLastStartle())
-                        *_creature.GLOBALS.STARTLE_THRESHOLD_DECAY*getStartleFactor();
+  uint8_t last = _creature.getLastStartleId();
+  if ( != _id) {
+    
     if (strength >= startleThreshold) {
       dprint("Startled! new startle id = ");
       dprintln(_id);
