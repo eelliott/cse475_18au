@@ -142,6 +142,13 @@ class Creature {
 
   uint8_t updateThreshold();
 
+  /**
+   * Gets the state corrisponding to the given id. Returns nullptr if id is not found.
+   * 
+   * @param sateId  id of desired state.
+  */
+  State* _getStateFromId(uint8_t stateId);
+
   // Run after construction but before loop.
   void setup();
 
@@ -218,13 +225,6 @@ class Creature {
 
   /** Current, next, and previous states, or null if no next state. */
   State *_state, *_next, *_prev;
-
-  /**
-   * Gets the state corrisponding to the given id. Returns nullptr if id is not found.
-   * 
-   * @param sateId  id of desired state.
-  */
-  State* _getStateFromId(uint8_t stateId);
 
   uint8_t _kitNum, _addr;
 

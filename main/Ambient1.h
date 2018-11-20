@@ -12,7 +12,14 @@ class Ambient1 : public State {
   const uint8_t* getLocalWeights();
   float getStartleFactor();
 private:
-  static constexpr uint8_t _localWeights[ACTIVE_STATES + AMBIENT_STATES] = { 0 };
+  static constexpr uint8_t _localWeights[ACTIVE_STATES + AMBIENT_STATES]  = { 
+    /*Ambient1*/  22,
+    /*Active1*/   13,
+    /*Ambient2*/  25,
+    /*Active2*/   14,
+    /*Ambient3*/  23,
+    /*Active3*/   12
+  };
 };
 
 #endif  // _AMBIENT1_H_

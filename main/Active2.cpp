@@ -6,7 +6,9 @@
 constexpr uint8_t Active2::_localWeights[];
 
 uint8_t Active2::getNumRepeats() {
- return 22;
+  int MAX = 6;
+  int MIN = 2;
+  return rand() % (MAX - MIN + 1) + MIN;
 }
 
 void Active2::loop(uint32_t dt) {
@@ -18,5 +20,5 @@ const uint8_t* Active2::getLocalWeights() {
 }
 
 float Active2::getStartleFactor() {
-  return 9999999999;
+  return 0.0015f;
 }

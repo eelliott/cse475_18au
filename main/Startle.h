@@ -15,9 +15,15 @@ protected:
   bool rxStartle(uint8_t len, uint8_t* payload);
   void PIR();
   void startled();
-
 private:
-  static constexpr uint8_t _localWeights[ACTIVE_STATES + AMBIENT_STATES] = { 0 };
+  static constexpr uint8_t _localWeights[ACTIVE_STATES + AMBIENT_STATES]  = { 
+    /*Ambient1*/  20,
+    /*Active1*/   12,
+    /*Ambient2*/  24,
+    /*Active2*/   14,
+    /*Ambient3*/  22,
+    /*Active3*/   13
+  };
 };
 
 #endif  // _STARTLE_H_

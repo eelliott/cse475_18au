@@ -8,7 +8,7 @@ class Creature;
 #define MAX_NAME_LEN 12
 
 #define ACTIVE_STATES 3
-#define AMBIENT_STATES 4
+#define AMBIENT_STATES 3
 
 class State {
  public:
@@ -143,9 +143,8 @@ class State {
     /*Ambient2*/  24,
     /*Active2*/   14,
     /*Ambient3*/  22,
-    /*Active3*/   13,
-    /*Ambient4*/  27
-   };
+    /*Active3*/   13
+  };
  private:
   char _name[MAX_NAME_LEN + 1];
   uint8_t _id;

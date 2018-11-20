@@ -6,7 +6,9 @@
 constexpr uint8_t Ambient3::_localWeights[];
 
 uint8_t Ambient3::getNumRepeats() {
- return 13;
+  int MAX = 14;
+  int MIN = 10;
+  return rand() % (MAX - MIN + 1) + MIN;
 }
 
 void Ambient3::loop(uint32_t dt) {
@@ -18,5 +20,5 @@ const uint8_t* Ambient3::getLocalWeights() {
 }
 
 float Ambient3::getStartleFactor() {
-  return 9999999999;
+  return 0.00275f;
 }

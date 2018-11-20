@@ -1,6 +1,7 @@
 #include "Creature.h"
 #include "State.h"
 #include "Debug.h"
+#include "Startle.h"
 #include <cmath>
 
 State::State(Creature& creature, char* const name, const uint8_t id) : _creature(creature), _id(id) {
@@ -126,11 +127,7 @@ State* State::transition() {
   Serial.println(stateID);
 
 
-  return _creature.getState(stateID);
-}
-
-int8_t* State::getGlobalWeights() {
-  return _globalWeights;
+  return _creature._getStateFromId(stateID);
 }
 
 void State::PIR() {
