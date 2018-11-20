@@ -22,25 +22,18 @@ void State::playSound(uint8_t sound_idx) {
   switch (sound_idx) {
     case 0: //AMBIENT1
       Midi::setSound(19);
-      Neopixel::setLight(1);
     case 1: //ACTIVE1
       Midi::setSound(18);
-      Neopixel::setLight(2);
     case 2: //AMBIENT2
       Midi::setSound(22);
-      Neopixel::setLight(3);
     case 3: //ACTIVE2
       Midi::setSound(21);
-      Neopixel::setLight(4);
     case 4: //AMBIENT3
       Midi::setSound(23);
-      Neopixel::setLight(5);
     case 5: //ACTIVE3
       Midi::setSound(20);
-      Neopixel::setLight(6);
     case 6: //STARTLE
       Midi::setSound(24);
-      Neopixel::setLight(6);
     default:
       Serial.print("No sound of ID ");
       Serial.println(sound_idx);
@@ -51,6 +44,19 @@ void State::playEffect(uint8_t effect_idx) {
   switch (effect_idx) {
     case 0:
       Serial.println("Playing effect 0...");
+      Neopixel::setLight(1);
+    case 1:
+      Neopixel::setLight(1);
+    case 2:
+      Neopixel::setLight(2);
+    case 3:
+      Neopixel::setLight(3);
+    case 4:
+      Neopixel::setLight(4);
+    case 5:
+      Neopixel::setLight(5);
+    case 6:
+      Neopixel::setLight(6);
     default:
       Serial.print("No effect of ID ");
       Serial.println(effect_idx);
