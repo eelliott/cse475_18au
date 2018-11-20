@@ -88,9 +88,9 @@ void Neopixel::crazed(uint32_t wait) {
   delay(wait);
 }
 
-/*
+
 // this is a 2nd ambiant/active code
-void randomspiral(uint32_t wait) {
+void Neopixel::randomspiral(uint32_t wait) {
   uint16_t i, j;
   static byte R = 100, G = 100, B = 100, R2 = 100, G2 = 100, B2 = 100;
   byte a;
@@ -135,7 +135,7 @@ void randomspiral(uint32_t wait) {
   G2 = G;
   B2 = B;
 }
-*/ 
+
 
 // this is a 3rd ambiant/active code
 void Neopixel::alternate(uint32_t wait) {
@@ -246,4 +246,32 @@ void Neopixel::Rain(byte* rds, byte* rss, byte* rdv, byte* rsv) {
     }
   }
   
+}
+
+// Input a value 0 to 255 to get a color value.
+// The colours are a transition r - g - b - back to r.
+uint32_t Neopixel::Wheel(byte WheelPos) {
+  WheelPos = 255 - WheelPos;
+  if (WheelPos < 85) {
+    return _strip.Color(255 - WheelPos * 3, 0, WheelPos * 3);
+  }
+  if (WheelPos < 170) {
+    WheelPos -= 85;
+    return _strip.Color(0, WheelPos * 3, 255 - WheelPos * 3);
+  }
+  WheelPos -= 170;
+  return _strip.Color(WheelPos * 3, 255 - WheelPos * 3, 0);
+}
+
+// Slightly different, this makes the rainbow equally distributed throughout
+void Neopixel::rainbowCycle(uint32_t wait) {
+  uint16_t i, j;
+
+  for (j = 0; j < 256 * 4; j++) { // n cycles of all colors on wheel
+    for (i = 0; i < _strip.numPixels(); i++) {
+      _strip.setPixelColor(i, Wheel(((i * 256 / _strip.numPixels()) + j) & 255));
+    }
+    _strip.show();
+    delay(wait);
+  }
 }

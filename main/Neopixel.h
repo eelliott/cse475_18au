@@ -15,9 +15,11 @@ class Neopixel {
   static void alternate(uint32_t wait);
   static void rainCycle(uint32_t wait);
   static void Rain(byte* rds, byte* rss, byte* rdv, byte* rsv);
+  static void rainbowCycle(uint32_t wait);
+  static uint32_t Wheel(byte WheelPos);
 
   /** Array of all light effects, in a fixed order, used to assign an index to each. Add your effects to this! */
-  static constexpr void (*LIGHTS[7])(uint32_t) = {&rainbow, &crazed, nullptr, &alternate, &rainCycle, nullptr, nullptr};
+  static constexpr void (*LIGHTS[7])(uint32_t) = {nullptr, &rainbow, &rainbowCycle, &randomspiral, &crazed, &rainCycle, &alternate};
 
   /**
    * Use this to set the current light gesture.

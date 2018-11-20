@@ -3,6 +3,7 @@
 #include "Debug.h"
 #include "Startle.h"
 #include "Midi.h"
+#include "Neopixel.h"
 #include <cmath>
 
 State::State(Creature& creature, char* const name, const uint8_t id) : _creature(creature), _id(id) {
@@ -21,18 +22,25 @@ void State::playSound(uint8_t sound_idx) {
   switch (sound_idx) {
     case 0: //AMBIENT1
       Midi::setSound(19);
+      Neopixel::setLight(1);
     case 1: //ACTIVE1
       Midi::setSound(18);
+      Neopixel::setLight(2);
     case 2: //AMBIENT2
       Midi::setSound(22);
+      Neopixel::setLight(3);
     case 3: //ACTIVE2
       Midi::setSound(21);
+      Neopixel::setLight(4);
     case 4: //AMBIENT3
       Midi::setSound(23);
+      Neopixel::setLight(5);
     case 5: //ACTIVE3
       Midi::setSound(20);
+      Neopixel::setLight(6);
     case 6: //STARTLE
       Midi::setSound(24);
+      Neopixel::setLight(6);
     default:
       Serial.print("No sound of ID ");
       Serial.println(sound_idx);
