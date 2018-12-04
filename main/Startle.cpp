@@ -12,7 +12,8 @@ uint8_t Startle::getNumRepeats() {
 }
 
 void Startle::loop(uint32_t dt) {
-//  dprintln(F("Startle"));
+  // TODO
+
 }
 
 const uint8_t* Startle::getLocalWeights() {

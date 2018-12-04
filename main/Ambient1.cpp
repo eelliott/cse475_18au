@@ -12,7 +12,7 @@ uint8_t Ambient1::getNumRepeats() {
 }
 
 void Ambient1::loop(uint32_t dt) {
-//  dprintln(F("Ambient1"));
+  // TODO
 }
 
 const uint8_t* Ambient1::getLocalWeights() {

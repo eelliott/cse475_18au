@@ -12,7 +12,9 @@ uint8_t Ambient3::getNumRepeats() {
 }
 
 void Ambient3::loop(uint32_t dt) {
-//  dprintln(F("Ambient3"));
+  Neopixel::setLight(0x0A);
+  Midi::setSound(0x15);
+
 }
 
 const uint8_t* Ambient3::getLocalWeights() {

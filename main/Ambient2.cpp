@@ -11,8 +11,11 @@ uint8_t Ambient2::getNumRepeats() {
   return rand() % (MAX - MIN + 1) + MIN;
 }
 
+// insects
 void Ambient2::loop(uint32_t dt) {
-//  dprintln(F("Ambient2"));
+  uint32_t soundIndex = rand() % (0x29 - 0x2A + 1) + 0x2A;
+  Neopixel::setLight(0x06);
+  Midi::setSound(soundIndex);
 }
 
 const uint8_t* Ambient2::getLocalWeights() {

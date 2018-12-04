@@ -11,8 +11,11 @@ uint8_t Active3::getNumRepeats() {
   return rand() % (MAX - MIN + 1) + MIN;
 }
 
+// melodics
 void Active3::loop(uint32_t dt) {
-//  dprintln(F("Active3"));
+  uint32_t soundIndex = rand() % (0x20 - 0x19 + 1) + 0x19;
+  Neopixel::setLight(0x05);
+  Midi::setSound(soundIndex);
 }
 
 const uint8_t* Active3::getLocalWeights() {

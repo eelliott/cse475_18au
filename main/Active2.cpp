@@ -11,8 +11,11 @@ uint8_t Active2::getNumRepeats() {
   return rand() % (MAX - MIN + 1) + MIN;
 }
 
+// bells
 void Active2::loop(uint32_t dt) {
-//  dprintln(F("Active2"));
+  uint32_t soundIndex = rand() % (0x24 - 0x21 + 1) + 0x21;
+  Neopixel::setLight(0x04);
+  Midi::setSound(soundIndex);
 }
 
 const uint8_t* Active2::getLocalWeights() {
