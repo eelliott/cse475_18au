@@ -26,7 +26,8 @@ inline float getBatteryVoltage() {
 
 Creature::Creature() {
   // Initialize _next to be the Wait state, so we will immediately transition into it on the first loop.
-  _next = getState(0);
+  //_next = getState(0);
+  _next = getState(1);
   _prev = _state = nullptr;
 
   pinMode(ID_PIN, INPUT_PULLUP);

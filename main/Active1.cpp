@@ -13,9 +13,11 @@ uint8_t Active1::getNumRepeats() {
 
 // birds
 void Active1::loop(uint32_t dt) {
-  uint32_t soundIndex = rand() % (0x11 - 0x01 + 1) + 0x01;
-  Neopixel::setLight(0x10);
-  Midi::setSound(soundIndex);
+  if (dt > 1000) {
+    uint32_t soundIndex = rand() % (0x11 - 0x01 + 1) + 0x01;
+    Neopixel::setLight(0x10);
+    Midi::setSound(soundIndex);
+  }
 }
 
 const uint8_t* Active1::getLocalWeights() {

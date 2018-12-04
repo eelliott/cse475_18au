@@ -13,9 +13,11 @@ uint8_t Active3::getNumRepeats() {
 
 // melodics
 void Active3::loop(uint32_t dt) {
-  uint32_t soundIndex = rand() % (0x20 - 0x19 + 1) + 0x19;
-  Neopixel::setLight(0x05);
-  Midi::setSound(soundIndex);
+  if (dt > 1000) {
+    uint32_t soundIndex = rand() % (0x20 - 0x19 + 1) + 0x19;
+    Neopixel::setLight(0x05);
+    Midi::setSound(soundIndex);
+  }
 }
 
 const uint8_t* Active3::getLocalWeights() {
