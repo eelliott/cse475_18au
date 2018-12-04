@@ -115,7 +115,7 @@ class State {
    * @param payload Should be the startle strength and id.
    */
   virtual bool rxStartle(int8_t rssi, uint8_t len, uint8_t* payload);
-  
+
  protected:
 
   // Event handlers
@@ -127,21 +127,6 @@ class State {
    * @param id  Unique identifier for this startle to avoid duplicates.
    */
   virtual void startled(uint8_t strength, uint8_t id);
-
-
-  /**
-   * Called when an sound should be displayed
-   *
-   * @param sound_idx  Sound index in sound array.
-   */
-  virtual void playSound(uint8_t sound_idx);
-
-  /**
-   * Called when an effect should be displayed
-   *
-   * @param effect_idx  Effect index in effect array.
-   */
-  virtual void playEffect(uint8_t effect_idx);
 
   /** Reference to the creature this is a state in */
   Creature& _creature;

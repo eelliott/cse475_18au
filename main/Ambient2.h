@@ -6,8 +6,8 @@
 
 class Ambient2 : public State {
  public:
-  Ambient2(Creature& creature) : State(creature, "Ambient2", 3) {}
-  uint8_t getNumRepeats();  // 14
+  Ambient2(Creature& creature) : State(creature, "Ambient 2", 3) {}
+  uint8_t getNumRepeats();
   void loop(uint32_t dt);
   const uint8_t* getLocalWeights();
   float getStartleFactor();

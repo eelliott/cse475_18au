@@ -7,7 +7,7 @@
 class Startle : public State {
  public:
   Startle(Creature& creature) : State(creature, "Startle", 255) {}
-  uint8_t getNumRepeats();  // 10
+  uint8_t getNumRepeats();
   void loop(uint32_t dt);
   const uint8_t* getLocalWeights();
   float getStartleFactor();

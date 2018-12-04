@@ -6,8 +6,8 @@
 
 class Active2 : public State {
  public:
-  Active2(Creature& creature) : State(creature, "Active2", 4) {}
-  uint8_t getNumRepeats();  // 22
+  Active2(Creature& creature) : State(creature, "Active 2", 4) {}
+  uint8_t getNumRepeats();
   void loop(uint32_t dt);
   const uint8_t* getLocalWeights();
   float getStartleFactor();

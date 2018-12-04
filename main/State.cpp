@@ -1,10 +1,9 @@
 #include "Creature.h"
 #include "State.h"
-#include "Debug.h"
 #include "Startle.h"
 #include "Midi.h"
 #include "Neopixel.h"
-#include <cmath>
+#include "Debug.h"
 
 State::State(Creature& creature, char* const name, const uint8_t id) : _creature(creature), _id(id) {
   strncpy(_name, name, MAX_NAME_LEN);
@@ -18,19 +17,12 @@ uint8_t State::getId() {
 char* State::getName() {
   return _name;
 }
-void State::playSound(uint8_t sound_idx) {
-  Midi::setSound(sound_idx);
-}
-
-void State::playEffect(uint8_t effect_idx) {
-  Neopixel::setLight(effect_idx);
-}
 
 bool State::rxPlaySound(uint8_t len, uint8_t* payload) {
   if (len < 1) {
     return false;
   }
-  playSound(payload[0]);
+  Midi::setSound(payload[0]);
   return true;
 }
 
@@ -38,35 +30,52 @@ bool State::rxPlayEffect(uint8_t len, uint8_t* payload) {
   if (len < 1) {
     return false;
   }
-  playEffect(payload[0]);
+  Neopixel::setLight(payload[0]);
   return true;
 }
 
 bool State::rxStartle(int8_t rssi, uint8_t len, uint8_t* payload) {
   if (len != 2) {
-    dprint("Invalid length of ");
-    dprint(len);
-    dprintln(" was recieved in rxStartle.");
     return false;
   }
   uint8_t strength = payload[0];
-  uint8_t id = payload[1];  
+  uint8_t id = payload[1];
 
-  float x = (_creature.GLOBALS.STARTLE_DECAY - rssi)/_creature.GLOBALS.STARTLE_DECAY;
-  float decay =  getStartleFactor()/(1+exp(-x));
-  strength = (uint8_t)round(decay * strength);
+  uint8_t decayStrength = strength;
+  float decay = (1.f / (1.f + exp((-_creature.GLOBALS.STARTLE_DECAY - rssi) / (float) _creature.GLOBALS.STARTLE_DECAY))) * getStartleFactor();
+  strength = (uint8_t) round(decay * strength);
+
   startled(strength, id);
-  return true;
 }
 
 void State::txStartle(uint8_t strength, uint8_t id) {
-  uint8_t payload[2] = {strength, id};
-  uint8_t len = 2;
-  _creature.tx(6, 255, 2, payload);
+  uint8_t pld[2];
+  pld[0] = strength;
+  pld[1] = id;
+  _creature.tx(6, 255, 2, pld);
+}
+
+void State::PIR() {
+  uint8_t id = rand() % 256;
+  uint8_t strength = min(255, (rand() % (_creature.GLOBALS.STARTLE_RAND_MAX - _creature.GLOBALS.STARTLE_RAND_MIN + 1) + _creature.GLOBALS.STARTLE_RAND_MIN) * (1.f - (255.f / _creature.GLOBALS.STARTLE_THRESHOLD) * 0.5 + 1.f));
+
+  startled(strength, id);
+}
+
+void State::startled(uint8_t strength, uint8_t id) {
+  uint8_t last = _creature.getLastStartleId();
+  if (id != last) {
+    _creature.updateThreshold();
+    if (strength >= _creature.getStartleThreshold()) {
+      _creature.setNextState(new Startle(_creature));
+      txStartle(strength, id);
+      _creature.setLastStartleId(id);
+      _creature.setStartleThreshold(255);
+    }
+  }
 }
 
 State* State::transition() {
-
   // Get total number of active creatures (i.e. they've recently communicated & are not in Wait or Startle)
   // Get the total number of creatures in each state
   // Get the total sum of the inverse absolute value of the RSSI
@@ -93,14 +102,15 @@ State* State::transition() {
     stateLikelihoods[i] = getLocalWeights()[i] + stateGlobalScalars[i] * distanceStateSums[i];
   }
 
-  Serial.print(stateLikelihoods[0]);
-  Serial.print("\t");
+  dprintln(F("State transition weights:"));
+  dprint(stateLikelihoods[0]);
+  dprint(F("\t"));
   for (uint8_t i = 1; i < ACTIVE_STATES + AMBIENT_STATES; i++) {
     stateLikelihoods[i] += stateLikelihoods[i - 1];
-    Serial.print(stateLikelihoods[i]);
-    Serial.print("\t");
+    dprint(stateLikelihoods[i]);
+    dprint(F("\t"));
   }
-  Serial.println();
+  dprintln();
 
   float randomVal = static_cast <float> (rand()) / ( static_cast <float> (RAND_MAX / (stateLikelihoods[ACTIVE_STATES + AMBIENT_STATES - 1])));
 
@@ -112,32 +122,12 @@ State* State::transition() {
     }
   }
 
-  Serial.print(randomVal);
-  Serial.print(" --> ");
-  Serial.println(stateID);
+  dprint(F("Generated "));
+  dprint(randomVal);
+  dprint(F(" -->  "));
+  dprintln(stateID);
 
-
-  return _creature._getStateFromId(stateID);
-}
-
-void State::PIR() {
-  uint8_t id = rand() % 256;
-  uint8_t strength = min(255, (rand() % (_creature.GLOBALS.STARTLE_RAND_MAX - _creature.GLOBALS.STARTLE_RAND_MIN + 1) + _creature.GLOBALS.STARTLE_RAND_MIN) * (1.f - (255.f / _creature.GLOBALS.STARTLE_THRESHOLD) * 0.5 + 1.f));
-
-  startled(strength, id);
-}
-
-void State::startled(uint8_t strength, uint8_t id) {
-  uint8_t last = _creature.getLastStartleId();
-  if (last != _id) {
-    _creature.updateThreshold();
-    if (strength >= _creature.getStartleThreshold()) {
-      _creature.setNextState(new Startle(_creature));
-      txStartle(strength, id);
-      _creature.setLastStartleId(id);
-      _creature.setStartleThreshold(255);
-    }
-  }
+  return _creature.getState(stateID);
 }
 
 int8_t* State::getGlobalWeights() {
