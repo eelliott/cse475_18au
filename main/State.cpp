@@ -19,48 +19,11 @@ char* State::getName() {
   return _name;
 }
 void State::playSound(uint8_t sound_idx) {
-  switch (sound_idx) {
-    case 0: //AMBIENT1
-      Midi::setSound(19);
-    case 1: //ACTIVE1
-      Midi::setSound(18);
-    case 2: //AMBIENT2
-      Midi::setSound(22);
-    case 3: //ACTIVE2
-      Midi::setSound(21);
-    case 4: //AMBIENT3
-      Midi::setSound(23);
-    case 5: //ACTIVE3
-      Midi::setSound(20);
-    case 6: //STARTLE
-      Midi::setSound(24);
-    default:
-      Serial.print("No sound of ID ");
-      Serial.println(sound_idx);
-  }
+  Midi::setSound(sound_idx);
 }
 
 void State::playEffect(uint8_t effect_idx) {
-  switch (effect_idx) {
-    case 0:
-      Serial.println("Playing effect 0...");
-      Neopixel::setLight(1);
-    case 1:
-      Neopixel::setLight(1);
-    case 2:
-      Neopixel::setLight(2);
-    case 3:
-      Neopixel::setLight(3);
-    case 4:
-      Neopixel::setLight(4);
-    case 5:
-      Neopixel::setLight(5);
-    case 6:
-      Neopixel::setLight(6);
-    default:
-      Serial.print("No effect of ID ");
-      Serial.println(effect_idx);
-  }
+  Neopixel::setLight(effect_idx);
 }
 
 bool State::rxPlaySound(uint8_t len, uint8_t* payload) {
