@@ -11,8 +11,42 @@ uint8_t Ambient1::getNumRepeats() {
   return rand() % (MAX - MIN + 1) + MIN;
 }
 
+// weather
 void Ambient1::loop(uint32_t dt) {
-  // TODO
+    int rand = rand();
+  switch (rand % 5) {
+    case 0:
+      Midi::setSound(0x13);
+      break;
+    case 1:
+      Midi::setSound(0x14);
+      break;
+    case 2:
+      Midi::setSound(0x16);
+      break;
+    case 3:
+      Midi::setSound(0x17);
+      break;
+    case 4:
+      Midi::setSound(0x18);
+      break;
+  }
+
+  switch (rand % 4) {
+    case 0:
+      Neopixel::setLight(0x0F);
+      break;
+    case 1:
+      Neopixel::setLight(0x07);
+      break;
+    case 2:
+      Neopixel::setLight(0x0C);
+      break;
+    case 3:
+      Neopixel::setLight(0x0E);
+      break;
+  }
+  
 }
 
 const uint8_t* Ambient1::getLocalWeights() {
