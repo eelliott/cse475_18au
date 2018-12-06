@@ -30,6 +30,9 @@ void Ambient1::loop(uint32_t dt) {
       case 4:
         Midi::setSound(0x18);
         break;
+      default:
+        Midi::setSound(0x13);
+        break;
     }
 
     switch (rand() % 4) {
@@ -44,6 +47,9 @@ void Ambient1::loop(uint32_t dt) {
         break;
       case 3:
         Neopixel::setLight(0x0E);
+        break;
+      default:
+        Neopixel::setLight(0x0F);
         break;
     }
   }

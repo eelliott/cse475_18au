@@ -14,7 +14,7 @@ uint8_t Active2::getNumRepeats() {
 // bells
 void Active2::loop(uint32_t dt) {
   if (dt > 1000) {
-    uint32_t soundIndex = rand() % (0x24 - 0x21 + 1) + 0x21;
+    uint32_t soundIndex = rand() % (0x24 - 0x21 + 0x01) + 0x21;
     Neopixel::setLight(0x04);
     Midi::setSound(soundIndex);
   }

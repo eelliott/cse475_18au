@@ -14,7 +14,7 @@ uint8_t Ambient2::getNumRepeats() {
 // insects
 void Ambient2::loop(uint32_t dt) {
   if (dt > 1000) {
-    uint32_t soundIndex = rand() % (0x29 - 0x2A + 1) + 0x2A;
+    uint32_t soundIndex = rand() % (0x29 - 0x2A + 0x01) + 0x2A;
     Neopixel::setLight(0x06);
     Midi::setSound(soundIndex);
   }
