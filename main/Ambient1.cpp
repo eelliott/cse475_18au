@@ -1,59 +1,27 @@
 #include "Ambient1.h"
 #include "Neopixel.h"
 #include "Midi.h"
-#include "Debug.h"
+#include "Neopixel.h"
+
+// Weather
 
 constexpr uint8_t Ambient1::_localWeights[];
 
 uint8_t Ambient1::getNumRepeats() {
-  int MAX = 12;
-  int MIN = 8;
-  return rand() % (MAX - MIN + 1) + MIN;
+ return random(10, 15);
 }
 
 // weather
 void Ambient1::loop(uint32_t dt) {
-  if (dt > 1000) {
-    switch (rand() % 5) {
-      case 0:
-        Midi::setSound(0x13);
-        break;
-      case 1:
-        Midi::setSound(0x14);
-        break;
-      case 2:
-        Midi::setSound(0x16);
-        break;
-      case 3:
-        Midi::setSound(0x17);
-        break;
-      case 4:
-        Midi::setSound(0x18);
-        break;
-      default:
-        Midi::setSound(0x13);
-        break;
-    }
-
-    switch (rand() % 4) {
-      case 0:
-        Neopixel::setLight(0x0F);
-        break;
-      case 1:
-        Neopixel::setLight(0x07);
-        break;
-      case 2:
-        Neopixel::setLight(0x0C);
-        break;
-      case 3:
-        Neopixel::setLight(0x0E);
-        break;
-      default:
-        Neopixel::setLight(0x0F);
-        break;
-    }
+  // Sounds
+  if (random(0, 10) <= 3) {
+    Midi::setSound(random(0x13, 0x18), true);
   }
-  
+
+  // Effects
+  uint16_t effects[] = {0x07, 0x0B, 0x0F};
+  uint16_t effectSize = 3; 
+  Neopixel::setLight(effects[random(0, effectSize)]);
 }
 
 const uint8_t* Ambient1::getLocalWeights() {

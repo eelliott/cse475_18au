@@ -1,46 +1,17 @@
 #include "Startle.h"
-#include "Neopixel.h"
 #include "Midi.h"
-#include "Debug.h"
+#include "Neopixel.h"
 
 constexpr uint8_t Startle::_localWeights[];
 
 uint8_t Startle::getNumRepeats() {
-  int MAX = 3;
-  int MIN = 1;
-  return rand() % (MAX - MIN + 1) + MIN;
+  return rand() % 4 + 1; // 1 - 4
 }
 
 // lightning/phone
 void Startle::loop(uint32_t dt) {
-  if (dt > 1000) {
-    switch (rand() % 3) {
-      case 0:
-        Midi::setSound(0x12);
-        break;
-      case 1:
-        Midi::setSound(0x25);
-        break;
-      case 2:
-        Midi::setSound(0x27);
-        break;
-    }
-
-    switch (rand() % 4) {
-      case 0:
-        Neopixel::setLight(0x09);
-        break;
-      case 1:
-        Neopixel::setLight(0x0D);
-        break;
-      case 2:
-        Neopixel::setLight(0x03);
-        break;
-      case 3:
-        Neopixel::setLight(0x12);
-        break;
-    }
-  }
+  Midi::setSound(0x27, true);
+  Neopixel::setLight(0x03);
 }
 
 const uint8_t* Startle::getLocalWeights() {
@@ -51,8 +22,4 @@ float Startle::getStartleFactor() {
   return 9999999999;
 }
 
-bool Startle::rxStartle(uint8_t len, uint8_t* payload) {}
-
-void Startle::PIR() {}
-
-void Startle::startled() {}
+void Startle::startled(uint8_t strength, uint8_t id) {}

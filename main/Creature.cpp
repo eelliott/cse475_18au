@@ -16,7 +16,7 @@
 
 #define KIT_NUM 14
 
-#define VERSION "2.3"
+#define VERSION "3.0"
 
 // Returns current battery voltage
 inline float getBatteryVoltage() {
@@ -427,6 +427,9 @@ void Creature::_transition(State* const state) {
       // Delete the current _prev if it's not null, and it's not what we're currently transitioning to.
       delete _prev;
     }
+
+    Midi::setSound(0);
+    Neopixel::setLight(0);
 
     _txSendState(old == nullptr ? 0 : old->getId(), state->getId());
     _prev = old;

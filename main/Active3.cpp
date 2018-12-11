@@ -1,23 +1,27 @@
 #include "Active3.h"
 #include "Neopixel.h"
 #include "Midi.h"
-#include "Debug.h"
+#include "Neopixel.h"
+
+// Melody
 
 constexpr uint8_t Active3::_localWeights[];
 
 uint8_t Active3::getNumRepeats() {
-  int MAX = 9;
-  int MIN = 3;
-  return rand() % (MAX - MIN + 1) + MIN;
+ return random(4, 10);
 }
 
 // melodics
 void Active3::loop(uint32_t dt) {
-  if (dt > 1000) {
-    uint32_t soundIndex = rand() % (0x20 - 0x19 + 0x01) + 0x19;
-    Neopixel::setLight(0x05);
-    Midi::setSound(soundIndex);
+  // Sounds
+  if (random(0, 10) <= 6) {
+    Midi::setSound(random(0x19, 0x1F));
   }
+
+  // Effects
+  uint16_t effects[] = {0x05};
+  uint16_t effectSize = 1; 
+  Neopixel::setLight(effects[random(0, effectSize)]);
 }
 
 const uint8_t* Active3::getLocalWeights() {

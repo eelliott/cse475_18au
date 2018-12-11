@@ -7,19 +7,12 @@
 class Active2 : public State {
  public:
   Active2(Creature& creature) : State(creature, "Active 2", 4) {}
-  uint8_t getNumRepeats();
-  void loop(uint32_t dt);
-  const uint8_t* getLocalWeights();
-  float getStartleFactor();
+  uint8_t getNumRepeats() override;
+  void loop(uint32_t dt) override;
+  const uint8_t* getLocalWeights() override;
+  float getStartleFactor() override;
 private:
-  static constexpr uint8_t _localWeights[ACTIVE_STATES + AMBIENT_STATES]  = { 
-    /*Ambient1*/  24,
-    /*Active1*/   8,
-    /*Ambient2*/  30,
-    /*Active2*/   9,
-    /*Ambient3*/  26,
-    /*Active3*/   10
-  };
+  static constexpr uint8_t _localWeights[ACTIVE_STATES + AMBIENT_STATES] = {10,  10,  8, 4, 6, 2};
 };
 
 #endif  // _ACTIVE2_H_
